@@ -81,3 +81,4 @@ func searchFunctionMaxAndMin(allEquation: [[Double]], allSigns: [String], functi
     
     return (min, max)
 }
+

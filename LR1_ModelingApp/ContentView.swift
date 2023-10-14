@@ -9,10 +9,12 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State var constraintsAmount: String = "0"
-    @State var allEquation: [[String]] = [[]]
+    @State var constraintsAmount: Int = 0
+    @State var allEquation: [[Double]] = []
     @State var allSigns: [String] = []
-    @State var function: (String, String) = ("","")
+    @State var function: (Double, Double) = (0,0)
+
+    
     
     @State var showFirstScreen: Bool = true
     @State var showSecondScreen: Bool = false
@@ -22,11 +24,11 @@ struct ContentView: View {
     var body: some View {
         
         if showFirstScreen {
-            FirstScreen(showFirstScreen: $showFirstScreen, showSecondScreen: $showSecondScreen, constraintAmount: $constraintsAmount)
+            FirstScreen(showFirstScreen: $showFirstScreen, showSecondScreen: $showSecondScreen, constraintAmount: $constraintsAmount, allEquation: $allEquation, allSigns: $allSigns)
         } else if showSecondScreen {
             SecondScreen(showFirstScreen: $showFirstScreen, showSecondScreen: $showSecondScreen, constraintAmount: $constraintsAmount, allEquation: $allEquation, allSigns: $allSigns, function: $function)
         } else {
-            ThirdScreen(showFirstScreen: $showFirstScreen, showSecondScreen: $showSecondScreen, allEquation: $allEquation, allSigns: $allSigns, function: $function)
+            ThirdScreen(showFirstScreen: $showFirstScreen, showSecondScreen: $showSecondScreen, constraintAmount: $constraintsAmount, allEquation: $allEquation, allSigns: $allSigns, function: $function)
         }
     }
 }
@@ -35,8 +37,9 @@ struct FirstScreen: View {
     
     @Binding var showFirstScreen: Bool
     @Binding var showSecondScreen: Bool
-    @Binding var constraintAmount: String
-    
+    @Binding var constraintAmount: Int
+    @Binding var allEquation: [[Double]]
+    @Binding var allSigns: [String]
     let backgroundColor = #colorLiteral(red: 0.9291701913, green: 0.9728782773, blue: 0.9366860986, alpha: 0.6508174669)
     
     var body: some View {
@@ -49,12 +52,17 @@ struct FirstScreen: View {
             VStack(spacing: 30) {
                 HStack(spacing: 20) {
                     Text("Введіть кількість лімітуючих прямих:")
-                    TextField("", text: $constraintAmount)
+                    TextField("", value: $constraintAmount, format: .number)
                         .frame(width: 40, height: 20)
                 }
                 
                 Button(action: {
-                    if constraintAmount != "0" {
+                    if constraintAmount != 0 {
+                        for _ in 0..<constraintAmount {
+                            let array: [Double] = [0, 0, 0]
+                            allEquation.append(array)
+                            allSigns.append("")
+                        }
                         showFirstScreen.toggle()
                         showSecondScreen.toggle()
                     }
@@ -71,11 +79,12 @@ struct SecondScreen: View {
     
     @Binding var showFirstScreen: Bool
     @Binding var showSecondScreen: Bool
-    @Binding var constraintAmount: String
-    @Binding var allEquation: [[String]]
+    @Binding var constraintAmount: Int
+    @Binding var allEquation: [[Double]]
     @Binding var allSigns: [String]
-    @Binding var function: (String, String)
-    
+    @Binding var function: (Double, Double)
+    @State var inputDouble: Double = 0
+    @State var inputString: String = ""
     let backgroundColor = #colorLiteral(red: 0.9291701913, green: 0.9728782773, blue: 0.9366860986, alpha: 0.6508174669)
     
     var body: some View {
@@ -88,28 +97,28 @@ struct SecondScreen: View {
             //foreground
             VStack (spacing: 20) {
                 
-                ForEach(0..<Int(constraintAmount)!) { index in
+                ForEach(0..<constraintAmount) { index in
                     HStack(spacing: 5) {
                         Text("Введіть \(index+1) рівняння: ")
-                        TextField("", text: $allEquation[index][0])
-                            .frame(width: 20, height: 20)
+                        TextField("", value: self.$allEquation[index][0], format: .number)
+                            .frame(width: 40, height: 20)
                         Text("*x1 +")
-                        TextField("", text: $allEquation[index][1])
-                            .frame(width: 20, height: 20)
+                        TextField("", value: self.$allEquation[index][1], format: .number)
+                            .frame(width: 40, height: 20)
                         Text("*x2")
                         TextField("", text: $allSigns[index])
                             .frame(width: 30, height: 20)
-                        TextField("", text: $allEquation[index][3])
-                            .frame(width: 20, height: 20)
+                        TextField("", value: self.$allEquation[index][2], format: .number)
+                            .frame(width: 40, height: 20)
                     }
                 }
                 
                 HStack (spacing: 5) {
                     Text("Введіть функцію: F(x) = ")
-                    TextField("", text: $function.0)
+                    TextField("", value: self.$function.0, format: .number)
                         .frame(width: 20, height: 20)
                     Text("*x1 +")
-                    TextField("", text: $function.1)
+                    TextField("", value: self.$function.1, format: .number)
                         .frame(width: 20, height: 20)
                     Text("*x2")
                 }
@@ -128,9 +137,10 @@ struct ThirdScreen: View {
     
     @Binding var showFirstScreen: Bool
     @Binding var showSecondScreen: Bool
-    @Binding var allEquation: [[String]]
+    @Binding var constraintAmount: Int
+    @Binding var allEquation: [[Double]]
     @Binding var allSigns: [String]
-    @Binding var function: (String, String)
+    @Binding var function: (Double, Double)
     
     let backgroundColor = #colorLiteral(red: 0.9291701913, green: 0.9728782773, blue: 0.9366860986, alpha: 0.6508174669)
     @State var points: [(CGFloat, CGFloat)] = []
@@ -232,6 +242,7 @@ struct ThirdScreen: View {
                     .frame(height: graphSize)
                     .onAppear {
                         points = searchRequiredPoint(allSigns: allSigns, allEquation: allEquation)
+
                         graphSize = wholeWindow.size.height*0.7
                         graphOriginCoordinates = ((wholeWindow.size.width - graphSize) / 2, topPartSize.height)
                         coefficient = graphSize / (axisLimits.1 - axisLimits.0)
@@ -261,7 +272,7 @@ struct ThirdScreen: View {
                     
                 }
             
-                ForEach(0..<points.count) { index in
+                ForEach(0..<points.count, id: \.self) { index in
                     Circle()
                         .frame(width: 5)
                         .position(x: zeroCoordinates.0 + points[index].0*coefficient, y: zeroCoordinates.1 - points[index].1*coefficient)
@@ -274,8 +285,5 @@ struct ThirdScreen: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-//        FirstScreen()
-//        SecondScreen()
-//        ThirdScreen()
     }
 }
