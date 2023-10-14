@@ -37,31 +37,17 @@ func findAllPoints(allEquation: [[Double]]) -> [(Double, Double)] {
 }
 
 // Функція, яка перевіряє точки на попадання в область значень
-func searchRequiredPoint(allSigns: [String], allEquation: [[String]]) -> [(CGFloat, CGFloat)] {
+func searchRequiredPoint(allSigns: [String], allEquation: [[Double]]) -> [(CGFloat, CGFloat)] {
     
-    //Створення копії масиву зі всіма коефіцієнтами, значення якого будуть не String, а Double
-    var allEquationCopy: [[Double]] = []
-    for elem in allEquation {
-        var tempArray: [Double] = []
-        for arrayElem in elem {
-            if let doubleArrayElem = Double(arrayElem) {
-                tempArray.append(doubleArrayElem)
-            }
-        }
-        if tempArray.count == 3 {
-            allEquationCopy.append(tempArray)
-        }
-    }
-    
-    let allPoints: [(Double, Double)] = findAllPoints(allEquation: allEquationCopy)
+    let allPoints: [(Double, Double)] = findAllPoints(allEquation: allEquation)
     var requiredPoints: [(CGFloat, CGFloat)] = []
     var pointCopy: (CGFloat, CGFloat)
     
     for i in 0..<allPoints.count {
         var check = 0
         let x1 = allPoints[i].0, x2 = allPoints[i].1
-        for j in 0..<allEquationCopy.count {
-            let a = allEquationCopy[j][0], b = allEquationCopy[j][1], c = allEquationCopy[j][2]
+        for j in 0..<allEquation.count {
+            let a = allEquation[j][0], b = allEquation[j][1], c = allEquation[j][2]
             if (a*x1 + b*x2 <= c && allSigns[j] == "<=") || (a*x1 + b*x2 >= c && allSigns[j] == ">=") {
                 check += 1
             }
@@ -77,23 +63,14 @@ func searchRequiredPoint(allSigns: [String], allEquation: [[String]]) -> [(CGFlo
 }
 
 // Функція, яка шукає мінімальне та максимальне значення функції та точки, в яких функція ці значення набуває
-func searchFunctionMaxAndMin(allEquation: [[String]], allSigns: [String], function: (String, String)) -> ([Double], [Double]) {
-    
-    //Створення копії кортежа з коефіцієнтами функції, де замість String коефіцієнти будуть Double
-    var functionCopy : (Double, Double) = (0, 0)
-    if let functionCopyFirst = Double(function.0) {
-        functionCopy.0 = functionCopyFirst
-    }
-    if let functionCopySecond = Double(function.1) {
-        functionCopy.1 = functionCopySecond
-    }
+func searchFunctionMaxAndMin(allEquation: [[Double]], allSigns: [String], function: (Double, Double)) -> ([Double], [Double]) {
     
     let requiredPoints = searchRequiredPoint(allSigns: allSigns, allEquation: allEquation)
     var min = [Double.infinity, 0, 0], max = [-Double.infinity, 0, 0]
     
     for elem in requiredPoints {
         let x1 = elem.0, x2 = elem.1
-        let functionValue = x1*functionCopy.0 + x2*functionCopy.1
+        let functionValue = x1*function.0 + x2*function.1
         if functionValue < min[0] {
             min = [functionValue, x1, x2]
         }
