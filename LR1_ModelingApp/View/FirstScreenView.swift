@@ -6,7 +6,7 @@ struct FirstScreen: View {
     @Binding var showFirstScreen: Bool
     @Binding var showSecondScreen: Bool
     @Binding var constraintAmount: Int
-    @Binding var allEquation: [[Double]]
+    @Binding var allEquation: [Straight]
     @Binding var allSigns: [String]
     let backgroundColor = #colorLiteral(red: 0.9291701913, green: 0.9728782773, blue: 0.9366860986, alpha: 0.6508174669)
     
@@ -27,8 +27,8 @@ struct FirstScreen: View {
                 Button(action: {
                     if constraintAmount != 0 {
                         for _ in 0..<constraintAmount {
-                            let array: [Double] = [0, 0, 0]
-                            allEquation.append(array)
+                            let equation = Straight(a: 0, b: 0, c: 0)
+                            allEquation.append(equation)
                             allSigns.append("")
                         }
                         showFirstScreen.toggle()

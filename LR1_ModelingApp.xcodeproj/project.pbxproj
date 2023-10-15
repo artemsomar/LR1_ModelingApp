@@ -11,6 +11,7 @@
 		49A14FF52ADB51CE00CC3C87 /* FirstScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A14FF42ADB51CE00CC3C87 /* FirstScreenView.swift */; };
 		49A14FF72ADB51E500CC3C87 /* SecondScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A14FF62ADB51E500CC3C87 /* SecondScreenView.swift */; };
 		49A14FF92ADB51FA00CC3C87 /* ThirdScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A14FF82ADB51FA00CC3C87 /* ThirdScreenView.swift */; };
+		49A14FFF2ADC233600CC3C87 /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A14FFE2ADC233600CC3C87 /* Structs.swift */; };
 		49FD92FD2ABC2032000DF056 /* LR1_ModelingAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49FD92FC2ABC2032000DF056 /* LR1_ModelingAppApp.swift */; };
 		49FD92FF2ABC2032000DF056 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49FD92FE2ABC2032000DF056 /* ContentView.swift */; };
 		49FD93012ABC2034000DF056 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49FD93002ABC2034000DF056 /* Assets.xcassets */; };
@@ -22,6 +23,7 @@
 		49A14FF42ADB51CE00CC3C87 /* FirstScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstScreenView.swift; sourceTree = "<group>"; };
 		49A14FF62ADB51E500CC3C87 /* SecondScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondScreenView.swift; sourceTree = "<group>"; };
 		49A14FF82ADB51FA00CC3C87 /* ThirdScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThirdScreenView.swift; sourceTree = "<group>"; };
+		49A14FFE2ADC233600CC3C87 /* Structs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Structs.swift; sourceTree = "<group>"; };
 		49FD92F92ABC2032000DF056 /* LR1_ModelingApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LR1_ModelingApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49FD92FC2ABC2032000DF056 /* LR1_ModelingAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LR1_ModelingAppApp.swift; sourceTree = "<group>"; };
 		49FD92FE2ABC2032000DF056 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 			isa = PBXGroup;
 			children = (
 				490D731E2AD53021002776E6 /* Functions.swift */,
+				49A14FFE2ADC233600CC3C87 /* Structs.swift */,
 			);
 			path = Control;
 			sourceTree = "<group>";
@@ -186,6 +189,7 @@
 				49FD92FF2ABC2032000DF056 /* ContentView.swift in Sources */,
 				49FD92FD2ABC2032000DF056 /* LR1_ModelingAppApp.swift in Sources */,
 				49A14FF92ADB51FA00CC3C87 /* ThirdScreenView.swift in Sources */,
+				49A14FFF2ADC233600CC3C87 /* Structs.swift in Sources */,
 				49A14FF72ADB51E500CC3C87 /* SecondScreenView.swift in Sources */,
 				490D731F2AD53021002776E6 /* Functions.swift in Sources */,
 				49A14FF52ADB51CE00CC3C87 /* FirstScreenView.swift in Sources */,

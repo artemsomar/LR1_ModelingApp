@@ -6,11 +6,10 @@ struct SecondScreen: View {
     @Binding var showFirstScreen: Bool
     @Binding var showSecondScreen: Bool
     @Binding var constraintAmount: Int
-    @Binding var allEquation: [[Double]]
+    @Binding var allEquation: [Straight]
     @Binding var allSigns: [String]
     @Binding var function: (Double, Double)
-    @State var inputDouble: Double = 0
-    @State var inputString: String = ""
+
     let backgroundColor = #colorLiteral(red: 0.9291701913, green: 0.9728782773, blue: 0.9366860986, alpha: 0.6508174669)
     
     var body: some View {
@@ -26,15 +25,15 @@ struct SecondScreen: View {
                 ForEach(0..<constraintAmount) { index in
                     HStack(spacing: 5) {
                         Text("Введіть \(index+1) рівняння: ")
-                        TextField("", value: self.$allEquation[index][0], format: .number)
+                        TextField("", value: self.$allEquation[index].a, format: .number)
                             .frame(width: 40, height: 20)
                         Text("*x1 +")
-                        TextField("", value: self.$allEquation[index][1], format: .number)
+                        TextField("", value: self.$allEquation[index].b, format: .number)
                             .frame(width: 40, height: 20)
                         Text("*x2")
                         TextField("", text: $allSigns[index])
                             .frame(width: 30, height: 20)
-                        TextField("", value: self.$allEquation[index][2], format: .number)
+                        TextField("", value: self.$allEquation[index].c, format: .number)
                             .frame(width: 40, height: 20)
                     }
                 }

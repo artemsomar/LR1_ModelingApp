@@ -4,7 +4,7 @@ import SwiftUI
 struct ContentView: View {
     
     @State var constraintsAmount: Int = 0
-    @State var allEquation: [[Double]] = []
+    @State var allEquation: [Straight] = []
     @State var allSigns: [String] = []
     @State var function: (Double, Double) = (0,0)
 
