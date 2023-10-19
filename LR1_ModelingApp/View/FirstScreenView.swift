@@ -6,8 +6,10 @@ struct FirstScreen: View {
     @Binding var showFirstScreen: Bool
     @Binding var showSecondScreen: Bool
     @Binding var constraintAmount: Int
-    @Binding var allEquation: [Straight]
-    @Binding var allSigns: [String]
+    @Binding var allEquations: [Equation]
+    
+    @State var showAlert: Bool = false
+    
     let backgroundColor = #colorLiteral(red: 0.9291701913, green: 0.9728782773, blue: 0.9366860986, alpha: 0.6508174669)
     
     var body: some View {
@@ -24,12 +26,14 @@ struct FirstScreen: View {
                         .frame(width: 40, height: 20)
                 }
                 
+                
                 Button(action: {
-                    if constraintAmount != 0 {
+                    if constraintAmount > 10 || constraintAmount < 1 {
+                        showAlert = true
+                    } else {
                         for _ in 0..<constraintAmount {
-                            let equation = Straight(a: 0, b: 0, c: 0)
-                            allEquation.append(equation)
-                            allSigns.append("")
+                            let equation = Equation(a: 0, b: 0, sign: "", c: 0)
+                            allEquations.append(equation)
                         }
                         showFirstScreen.toggle()
                         showSecondScreen.toggle()
@@ -37,6 +41,12 @@ struct FirstScreen: View {
                 }, label: {
                     Text("Ввести")
                 })
+                
+                if showAlert {
+                    Text("Кількість рівнянь має входити в межі [1;10]")
+                        .font(.title3)
+                        .foregroundColor(.red)
+                }
             }
             .font(.title)
         }

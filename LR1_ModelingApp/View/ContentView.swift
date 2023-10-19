@@ -4,8 +4,7 @@ import SwiftUI
 struct ContentView: View {
     
     @State var constraintsAmount: Int = 0
-    @State var allEquation: [Straight] = []
-    @State var allSigns: [String] = []
+    @State var allEquations: [Equation] = []
     @State var function: (Double, Double) = (0,0)
 
     @State var showFirstScreen: Bool = true
@@ -16,11 +15,11 @@ struct ContentView: View {
     var body: some View {
         
         if showFirstScreen {
-            FirstScreen(showFirstScreen: $showFirstScreen, showSecondScreen: $showSecondScreen, constraintAmount: $constraintsAmount, allEquation: $allEquation, allSigns: $allSigns)
+            FirstScreen(showFirstScreen: $showFirstScreen, showSecondScreen: $showSecondScreen, constraintAmount: $constraintsAmount, allEquations: $allEquations)
         } else if showSecondScreen {
-            SecondScreen(showFirstScreen: $showFirstScreen, showSecondScreen: $showSecondScreen, constraintAmount: $constraintsAmount, allEquation: $allEquation, allSigns: $allSigns, function: $function)
+            SecondScreen(showFirstScreen: $showFirstScreen, showSecondScreen: $showSecondScreen, constraintAmount: $constraintsAmount, allEquations: $allEquations, function: $function)
         } else {
-            ThirdScreen(showFirstScreen: $showFirstScreen, showSecondScreen: $showSecondScreen, constraintAmount: $constraintsAmount, allEquation: $allEquation, allSigns: $allSigns, function: $function)
+            ThirdScreen(showFirstScreen: $showFirstScreen, showSecondScreen: $showSecondScreen, constraintAmount: $constraintsAmount, allEquations: $allEquations, function: $function)
         }
     }
 }

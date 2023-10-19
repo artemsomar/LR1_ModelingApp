@@ -6,21 +6,22 @@ struct ThirdScreen: View {
     @Binding var showFirstScreen: Bool
     @Binding var showSecondScreen: Bool
     @Binding var constraintAmount: Int
-    @Binding var allEquation: [Straight]
-    @Binding var allSigns: [String]
+    @Binding var allEquations: [Equation]
     @Binding var function: (Double, Double)
     
-    let backgroundColor = #colorLiteral(red: 0.9291701913, green: 0.9728782773, blue: 0.9366860986, alpha: 0.6508174669)
     @State var points: [Point] = []
-    
+    @State var straightPoints: [[Point]] = []
     @State var graphSize: CGFloat = 500
     @State var graphOriginCoordinates: Point = Point(x1: 0, x2: 0)
     @State var zeroCoordinates: Point = Point(x1: 0, x2: 0)
     @State var size: CGSize = .zero
-    @State var topPartSize: CGSize = .zero
-    let graphLimits: (CGFloat, CGFloat) = (-2, 20)
-    
     @State var coefficient: CGFloat = 0
+    @State var functionMinAndMax: (FunctionValue, FunctionValue) = (FunctionValue(value: 0, x1: 0, x2: 0), FunctionValue(value: 0, x1: 0, x2: 0))
+    
+    let backgroundColor = #colorLiteral(red: 0.9291701913, green: 0.9728782773, blue: 0.9366860986, alpha: 0.6508174669)
+    let graphLimits: (CGFloat, CGFloat) = (-2, 20)
+    let topPartHeight: CGFloat = 50
+    let colors = [Color.blue, Color.brown, Color.cyan, Color.green, Color.indigo, Color.mint, Color.orange, Color.pink, Color.purple, Color.red]
     
     var body: some View {
         
@@ -30,10 +31,10 @@ struct ThirdScreen: View {
                 VStack (spacing: 0)  {
                     
                     Text("Графік функції:")
+                        .frame(height: topPartHeight)
                         .font(.title)
-                        .padding(.top, 30)
-                        .padding(.bottom, 20)
-                            
+
+                
                     ZStack {
                         Rectangle()
                             .fill(Color.white)
@@ -109,23 +110,24 @@ struct ThirdScreen: View {
                     }
                     .frame(height: graphSize)
                     .onAppear {
-                        points = searchRequiredPoint(allSigns: allSigns, allEquation: allEquation)
-
+                        functionMinAndMax = searchFunctionMinAndMax(allEquations: allEquations, function: function)
+                        points = searchRequiredPoint(allEquations: allEquations)
+                        straightPoints = searchPointsForStraights(allEquations: allEquations, graphLimits: graphLimits)
                         graphSize = wholeWindow.size.height*0.7
-                        graphOriginCoordinates = Point(x1: (wholeWindow.size.width - graphSize) / 2, x2: topPartSize.height)
+                        graphOriginCoordinates = Point(x1: (wholeWindow.size.width - graphSize) / 2, x2: 0)
                         coefficient = graphSize / (graphLimits.1 - graphLimits.0)
                         zeroCoordinates = Point(x1: graphOriginCoordinates.x1 - graphLimits.0 * coefficient, x2: graphOriginCoordinates.x2 + graphLimits.1 * coefficient)
                         
                     }
                     .onChange(of: wholeWindow.size) { newSize in
                         graphSize = wholeWindow.size.height*0.7
-                        graphOriginCoordinates = Point(x1: (wholeWindow.size.width - graphSize) / 2, x2: topPartSize.height)
+                        graphOriginCoordinates = Point(x1: (wholeWindow.size.width - graphSize) / 2, x2: 0)
                         coefficient = graphSize / (graphLimits.1 - graphLimits.0)
                         zeroCoordinates = Point(x1: graphOriginCoordinates.x1 - graphLimits.0 * coefficient, x2: graphOriginCoordinates.x2 + graphLimits.1 * coefficient)
                     }
                     
                     
-                    Text("Максимальне значення функції = 2300 при x1 = 9, x2 = 1\nМінімальне значення функції = 1550 при x1 = 1, x2 = 4")
+                    Text("Мінімальне значення функції = \(NSString(format: "%.2f",functionMinAndMax.0.value)) при x1 = \(NSString(format: "%.2f",functionMinAndMax.0.x1)), x2 = \(NSString(format: "%.2f",functionMinAndMax.0.x2))\nМаксимальне значення функції = \(NSString(format: "%.2f",functionMinAndMax.1.value)) при x1 = \(NSString(format: "%.2f",functionMinAndMax.1.x1)), x2 = \(NSString(format: "%.2f",functionMinAndMax.1.x2))")
                         .padding(20)
                     
                     Button(action: {
@@ -133,22 +135,25 @@ struct ThirdScreen: View {
                     }, label: {
                         Text("Ввести нове рівняння")
                             .frame(width: 300, height: 40)
-                            
                     })
                     
-                    Spacer()
-                    
+                }
+                
+                //Малювання на графіку прямих
+                ForEach(0..<straightPoints.count, id: \.self) { index in
+                    Path { straight in
+                        straight.move(to: CGPoint(x: zeroCoordinates.x1 + straightPoints[index][0].x1*coefficient, y: zeroCoordinates.x2 - straightPoints[index][0].x2*coefficient + topPartHeight))
+                        straight.addLine(to: CGPoint(x: zeroCoordinates.x1 + straightPoints[index][1].x1*coefficient, y: zeroCoordinates.x2 - straightPoints[index][1].x2*coefficient + topPartHeight))
+                    }
+                    .stroke(colors[index], lineWidth: 1)
                 }
                 
                 //Малювання на графіку точок
                 ForEach(0..<points.count, id: \.self) { index in
                     Circle()
-                        .frame(width: 5)
-                        .position(x: zeroCoordinates.x1 + points[index].x1*coefficient, y: zeroCoordinates.x2 - points[index].x2*coefficient)
+                        .frame(width: 4)
+                        .position(x: zeroCoordinates.x1 + points[index].x1*coefficient , y: zeroCoordinates.x2 - points[index].x2*coefficient + topPartHeight)
                 }
-                
-                //Малювання на графіку прямих
-                
             }
         }
     }

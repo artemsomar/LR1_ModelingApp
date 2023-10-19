@@ -2,7 +2,7 @@
 import Foundation
 
 // Функція, яка шукає точку пересічення двох прямих
-func solveLinearEquations(firstEquation: Straight, secondEquation: Straight) -> Point {
+func solveLinearEquations(firstEquation: Equation, secondEquation: Equation) -> Point {
     
     var firstEquationCopy = firstEquation, secondEquationCopy = secondEquation
     var resultPoint = Point(x1: 0, x2: 0)
@@ -23,13 +23,13 @@ func solveLinearEquations(firstEquation: Straight, secondEquation: Straight) -> 
 }
 
 // Функція, яка шукає всі точки пересічення прямих обмеження
-func findAllPoints(allEquation: [Straight]) -> [Point] {
+func findAllPoints(allEquations: [Equation]) -> [Point] {
     
     var allPoints: [Point] = []
     
-    for i in 0..<allEquation.count {
-        for j in i+1..<allEquation.count {
-            let point = solveLinearEquations(firstEquation: allEquation[i], secondEquation: allEquation[j])
+    for i in 0..<allEquations.count {
+        for j in i+1..<allEquations.count {
+            let point = solveLinearEquations(firstEquation: allEquations[i], secondEquation: allEquations[j])
             if !point.x1.isNaN && !point.x2.isNaN {
                 allPoints.append(point)
             }
@@ -40,21 +40,21 @@ func findAllPoints(allEquation: [Straight]) -> [Point] {
 }
 
 // Функція, яка перевіряє точки на попадання в область значень
-func searchRequiredPoint(allSigns: [String], allEquation: [Straight]) -> [Point] {
+func searchRequiredPoint(allEquations: [Equation]) -> [Point] {
     
-    let allPoints: [Point] = findAllPoints(allEquation: allEquation)
+    let allPoints: [Point] = findAllPoints(allEquations: allEquations)
     var requiredPoints: [Point] = []
     
     for i in 0..<allPoints.count {
         var check = 0
         let x1 = allPoints[i].x1, x2 = allPoints[i].x2
-        for j in 0..<allEquation.count {
-            let a = allEquation[j].a, b = allEquation[j].b, c = allEquation[j].c
-            if (a*x1 + b*x2 <= c && allSigns[j] == "<=") || (a*x1 + b*x2 >= c && allSigns[j] == ">=") {
+        for j in 0..<allEquations.count {
+            let a = allEquations[j].a, b = allEquations[j].b, c = allEquations[j].c
+            if (a*x1 + b*x2 <= c && allEquations[j].sign == "<=") || (a*x1 + b*x2 >= c && allEquations[j].sign == ">=") {
                 check += 1
             }
         }
-        if check == allEquation.count /*&& !requiredPoints.contains(where: { $0 == allPoints[i] })*/ {
+        if check == allEquations.count  {
             requiredPoints.append(allPoints[i])
         }
     }
@@ -63,30 +63,64 @@ func searchRequiredPoint(allSigns: [String], allEquation: [Straight]) -> [Point]
 }
 
 // Функція, яка шукає мінімальне та максимальне значення функції та точки, в яких функція ці значення набуває
-func searchFunctionMaxAndMin(allEquation: [Straight], allSigns: [String], function: (Double, Double)) -> (FunctionValue, FunctionValue) {
+func searchFunctionMinAndMax(allEquations: [Equation], function: (Double, Double)) -> (FunctionValue, FunctionValue) {
     
-    let requiredPoints = searchRequiredPoint(allSigns: allSigns, allEquation: allEquation)
+    let requiredPoints = searchRequiredPoint(allEquations: allEquations)
     
-    var min = FunctionValue(value: Double.infinity, point: Point(x1: 0, x2: 0))
-    var max = FunctionValue(value: -Double.infinity, point: Point(x1: 0, x2: 0))
+    var min = FunctionValue(value: Double.infinity, x1: 0, x2: 0)
+    var max = FunctionValue(value: -Double.infinity, x1: 0, x2: 0)
     
     for elem in requiredPoints {
-        let point = Point(x1: elem.x1, x2: elem.x2)
-        let functionValue = point.x1*function.0 + point.x2*function.1
+        let functionValue = elem.x1*function.0 + elem.x2*function.1
         if functionValue < min.value {
-            min = FunctionValue(value: functionValue, point: point)
+            min = FunctionValue(value: functionValue, x1: elem.x1, x2: elem.x2)
         }
         if functionValue > max.value {
-            max = FunctionValue(value: functionValue, point: point)
+            max = FunctionValue(value: functionValue, x1: elem.x1, x2: elem.x2)
         }
     }
     
     return (min, max)
 }
 
-//Потім переробити через структури
-////Функція, яка шукає точки для подальшого малювання прямих
-//func searchPointsForStraights(allEquation: [Straight], graphLimits: Point) -> [(Point, Point)] {
-//    
-//}
+//Функція, яка шукає точки для подальшого малювання прямих
+func searchPointsForStraights(allEquations: [Equation], graphLimits: (CGFloat, CGFloat)) -> [[Point]] {
+    
+    var equationPoints: [[Point]] = []
+    var x1: CGFloat, x2: CGFloat
+    
+    for elem in allEquations {
+        var array: [Point] = []
+        
+        x1 = graphLimits.0
+        x2 = (elem.c - elem.a * x1)/elem.b
+        if graphLimits.0 < x2 && x2 < graphLimits.1 {
+            let point = Point(x1: x1, x2: x2)
+            array.append(point)
+        }
+        
+        x1 = graphLimits.1
+        x2 = (elem.c - elem.a * x1)/elem.b
+        if graphLimits.0 < x2 && x2 < graphLimits.1 {
+            let point = Point(x1: x1, x2: x2)
+            array.append(point)
+        }
+        
+        x2 = graphLimits.0
+        x1 = (elem.c - elem.b * x2)/elem.a
+        if graphLimits.0 < x1 && x1 < graphLimits.1 {
+            let point = Point(x1: x1, x2: x2)
+            array.append(point)
+        }
+        
+        x2 = graphLimits.1
+        x1 = (elem.c - elem.b * x2)/elem.a
+        if graphLimits.0 < x1 && x1 < graphLimits.1 {
+            let point = Point(x1: x1, x2: x2)
+            array.append(point)
+        }
+        equationPoints.append(array)
+    }
+    return equationPoints
+}
 
